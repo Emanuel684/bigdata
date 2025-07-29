@@ -1,4 +1,6 @@
+import csv
 from collections import defaultdict
+from io import StringIO
 from typing import Any, Dict, List, Tuple
 
 from map_reduce_interface import MapReduceInterface
@@ -22,19 +24,6 @@ class SimpleMapReduce(MapReduceInterface):
         Los estudiantes deben sobrescribir este método.
         """
         return [(key, value)]
-
-        # print("key:", key, "value:", value)
-        # words = value.lower().split()
-        # result = []
-        # for word in words:
-        #     # Emitir cada palabra con un conteo de 1
-        #     key = word.strip('.,!?";')  # Limpiar caracteres especiales
-        #     if key:
-        #         # Asegurarse de que la clave no esté vacía
-        #         print("word:", key)
-        #         # Emitir la palabra como clave y 1 como valor
-        #         result.append((key, 1))
-        # return result
 
     def reduce_function(self, key: Any, values: List[Any]) -> List[Tuple[Any, Any]]:
         """
@@ -62,22 +51,20 @@ class SimpleMapReduce(MapReduceInterface):
         for key, value in input_data:
             print(f"Procesando entrada: ({key}, {value})")
 
-            # mapped = self.map_function(key=key, value=value)
-            print("key:", key, "value:", value)
-            words = value.lower().split()
-            mapped = []
-            for word in words:
-                # Emitir cada palabra con un conteo de 1
-                key = word.strip('.,!?";')  # Limpiar caracteres especiales
-                if key:
-                    # Asegurarse de que la clave no esté vacía
-                    print("word:", key)
-                    # Emitir la palabra como clave y 1 como valor
-                    mapped.append((key, 1))
+            if value:
 
-            print("mapped:", mapped)
-            intermediate_results.extend(mapped)
-            print(f"   MAP: ({key}, {value}) -> {mapped}")
+                reader = csv.reader(
+                    StringIO(value.lower()), quotechar='"', skipinitialspace=True
+                )
+                row = next(reader)  # Obtener la primera (y única) fila
+                country = row[6]
+
+                print("country: ", country)
+                mapped = [(country, 1)]  # Usar la columna 6 como ejemplo
+
+                print("mapped:", mapped)
+                intermediate_results.extend(mapped)
+                print(f"   MAP: ({key}, {value}) -> {mapped}")
 
         print(
             f"Fase MAP completada. {len(intermediate_results)} pares intermedios generados.\n"
@@ -129,7 +116,6 @@ class SimpleMapReduce(MapReduceInterface):
         final_results = []
 
         for key, values in grouped_data.items():
-            # reduced = self.reduce_function(key, values)
             reduced = [(key, sum(values))]
             final_results.extend(reduced)
             print(f"   REDUCE: {key}, {sum(values)} -> {reduced}")

@@ -35,34 +35,14 @@ class WordCountMapReduce(SimpleMapReduce):
 
 # Ejemplo de uso
 if __name__ == "__main__":
-    # with open("data/La_divina_comedia-Dante_Alighieri.txt", "r", encoding="utf-8") as f:
-    #     file = f.read()
-
-    # Datos de ejemplo: documentos de texto
-    # documents = [
-    #     ("comedia", file),
-    # ]
-
-    # documents = [
-    #     (1,
-    #      "la fuerza es poderosa en los jedi de la galaxia. la fuerza fluye a través de todos los seres vivos de la galaxia. los jedi usan la fuerza para proteger la paz en la galaxia y mantener el equilibrio entre la luz y la oscuridad"),
-    #     (2,
-    #      "luke skywalker es un jedi excelente con la fuerza. luke skywalker entrenó con yoda para dominar la fuerza. el jedi luke skywalker luchó contra darth vader y el emperador para salvar la galaxia del imperio"),
-    #     (3,
-    #      "el imperio es una organización de poder galáctico. el imperio controla la galaxia con mano de hierro. darth vader y el emperador lideran el imperio desde la estrella de la muerte para dominar toda la galaxia"),
-    #     (4,
-    #      "la fuerza y los jedi luchan contra el lado oscuro. los jedi protegen la galaxia del lado oscuro de la fuerza. el lado oscuro corrompe a los jedi y los convierte en sith que sirven al imperio")
-    # ]
 
     with open("data/customers-2000000.csv", "r", encoding="utf-8") as f:
         file = f.read()
 
     # Datos de ejemplo: documentos de texto
     documents = []
-
     # Creamos chunks por line
     chunks = file.split("\n")
-
     chunks = chunks[1::]  # Limitar a los primeros 1000 para pruebas
 
     # Iteramos sobre los chunks y los agregamos a la lista de documentos
@@ -88,7 +68,7 @@ if __name__ == "__main__":
     top_10 = sorted(results, key=lambda x: x[1], reverse=True)[:10]
     import csv
 
-    with open("top_10_words.csv", "w", newline="", encoding="utf-8") as f:
+    with open("top_10_country.csv", "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
-        writer.writerow(["word", "count"])
+        writer.writerow(["country", "count"])
         writer.writerows(top_10)
